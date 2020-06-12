@@ -6,12 +6,53 @@
         <title>ODIN Library Project</title>
     </head>
     <body onload="render()">
-        <div class="jumbotron">
-            <div class="col-lg-7">
-                <button class="btn btn-primary mb-5" onclick="addBookToLibrary()">Add Book</button>
-                <div id="library-list"></div>
-            </div>
-            <script src="js/main.js"></script> 
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">MY BOOK SHELF</a>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+          <form class="navbar-nav mr-auto">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" id="search">
+          </form>
+          <div class="form-inline my-2 my-lg-0">
+            <button class="btn btn-secondary my-2 my-sm-0" id="add-book-button">Add Book</button>
+          </div>
         </div>
+      </nav>
+      <div class="col-lg-12"></div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Author</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="library-list"></tbody>
+      </div>
+      <div class="modal" id="add-book-modal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Add a New Book</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                      <label for="title">Title</label>
+                      <input type="title" class="form-control" id="new-title" aria-describedby="titleHelp" placeholder="Enter Book Title">
+                      <br>
+                      <label for="author">Author</label>
+                      <input type="author" class="form-control" id="new-author" placeholder="Enter Book's Author">
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="execute-add-book">Add Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <script src="js/main.js"></script>
     </body>
 </html>

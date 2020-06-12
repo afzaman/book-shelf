@@ -3,38 +3,18 @@ let myLibrary = [
     {
         "title" : "Lord of the Rings",
         "author" : "J.R.R. Tolkein",
-        "readStatus" : true,
+        "readStatus" : "Read",
     },
     {
         "title" : "Dune",
         "author" : "Frank Herbert",
-        "readStatus" : true,
+        "readStatus" : "Read",
     }];
 
 function Book(title, author, readStatus) {
   this.title = title;
   this.author = author;
   this.readStatus = readStatus;
-}
-
-function addBookToLibrary() {
-  //Create Variable for Title
-  let title = 0;
-  //Create Variable for Author
-  let author = 0;
-  //Create Variable for Read Status
-  let readStatus = false;
-  //Prompt for Title
-  title = prompt('What is the title of the book?')
-  //Prompt for Author
-  author = prompt('Who wrote the book?')
-  //Prompy for Read Status
-  readStatus = confirm('Have you read the book?')
-  //Append to the Array
-  let book = new Book(title, author, readStatus);
-  myLibrary.push(book);
-  //Update the Display
-  render();
 }
 function deleteBookFromLibrary(title) {
     //Confirm the users action
@@ -53,7 +33,7 @@ function updateReadStatus(title, author, readStatus){
     //Remove the object
     myLibrary.splice(pos,1);
     //Toggle the readStatus
-    newReadStatus = (readStatus === true) ? false : true;
+    newReadStatus = (readStatus === "Read") ? "Unread" : "Read";
     //Create a new book
     let book = new Book(title, author, newReadStatus);
     //Append it to the list
@@ -61,15 +41,77 @@ function updateReadStatus(title, author, readStatus){
     //Update the Display
     render();
 }
-
 //Display book list in HTML
 function render() {
     const html = myLibrary.map(book => `
-    <div class="card card-body mb-1">
-        <h4>${book.title} by ${book.author}, Read = ${book.readStatus}</h4>
-        <button class="btn btn-primary btn-xs" onclick="updateReadStatus('${book.title}', '${book.author}', ${book.readStatus})">Read/Unread</button>
-        <button class="btn btn-danger btn-xs" onclick="deleteBookFromLibrary('${book.title}')">Delete Book</button>
-    </div>
-    `).join('');
+        <tr class="default">
+        <th scope="row">${book.title}</th>
+        <td>${book.author}</td>
+        <td onclick="updateReadStatus('${book.title}', '${book.author}', '${book.readStatus}')">${book.readStatus}</td>
+        <td>
+            <button class="btn btn-danger my-2 my-sm-0" onclick="deleteBookFromLibrary('${book.title}')">Delete Book</button>
+        </td>
+        </tr>
+        `).join('');
     libraryList.innerHTML = html;
 }
+//Open and Close Modal Form
+var modal = document.getElementById("add-book-modal");
+var btn = document.getElementById("add-book-button");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+    modal.style.display = "block";
+  }
+span.onclick = function() {
+modal.style.display = "none";
+}
+window.onclick = function(event) {
+if (event.target == modal) {
+    modal.style.display = "none";
+    }
+}
+//Add book to library
+var addBookToLibrary = document.getElementById("execute-add-book");
+addBookToLibrary.onclick = function() {
+    //Pull the book title from the input
+    let title = document.getElementById("new-title").value;
+    //Pull the author from the input
+    let author = document.getElementById("new-author").value;
+    //Create Variable for Read Status
+    let readStatus ="Unread";
+    let book = new Book(title, author, readStatus);
+    myLibrary.push(book);
+    //Update the Display
+    modal.style.display = "none";
+    document.getElementById("new-title").value = "";
+    document.getElementById("new-author").value = "";
+    render();
+}
+const search = document.getElementById('search');
+const searchBooks = searchText => {
+    let matches = myLibrary.filter(book => {
+        const regex = new RegExp(`${searchText}`, 'gi');
+        return book.title.match(regex) || book.author.match(regex);
+    });
+    if (searchText.length < 1){
+        matches = [];
+        render();
+    }
+    outputHtml(matches);
+};
+const outputHtml = matches => {
+    if (matches.length > 0) {
+        const html = matches.map(book => `
+            <tr class="default">
+            <th scope="row">${book.title}</th>
+            <td>${book.author}</td>
+            <td onclick="updateReadStatus('${book.title}', '${book.author}', '${book.readStatus}')">${book.readStatus}</td>
+            <td>
+                <button class="btn btn-danger my-2 my-sm-0" onclick="deleteBookFromLibrary('${book.title}')">Delete Book</button>
+            </td>
+            </tr>
+        `).join('');
+        libraryList.innerHTML = html;
+    }
+}
+search.addEventListener('input', () => searchBooks(search.value));
