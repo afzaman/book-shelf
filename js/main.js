@@ -1,21 +1,16 @@
 const libraryList = document.getElementById('library-list');
-let myLibrary = [
-    {
-        "title" : "Lord of the Rings",
-        "author" : "J.R.R. Tolkein",
-        "readStatus" : "Read",
-    },
-    {
-        "title" : "Dune",
-        "author" : "Frank Herbert",
-        "readStatus" : "Read",
-    }];
+let myLibrary = JSON.parse(localStorage.getItem("myLibrary"));
 
 function Book(title, author, readStatus) {
   this.title = title;
   this.author = author;
   this.readStatus = readStatus;
 }
+
+function updateLocalStorage(library){
+    localStorage.setItem("myLibrary", JSON.stringify(library));
+}
+
 function deleteBookFromLibrary(title) {
     //Confirm the users action
     if (confirm('Are you sure?')) {
@@ -23,10 +18,13 @@ function deleteBookFromLibrary(title) {
         var pos = myLibrary.findIndex(obj => obj.title == title);
         //Remove the object
         myLibrary.splice(pos,1);
+        //Update Local Storage
+        updateLocalStorage(myLibrary);
         //Update the Display
         render();
     };
 }
+
 function updateReadStatus(title, author, readStatus){
     //Find the index of the title
     var pos = myLibrary.findIndex(obj => obj.title == title);
@@ -38,11 +36,15 @@ function updateReadStatus(title, author, readStatus){
     let book = new Book(title, author, newReadStatus);
     //Append it to the list
     myLibrary.splice(pos,0,book);
+    //Update Local Storage
+    updateLocalStorage(myLibrary);
     //Update the Display
     render();
 }
+
 //Display book list in HTML
 function render() {
+    myLibrary = JSON.parse(localStorage.getItem("myLibrary"));
     const html = myLibrary.map(book => `
         <tr class="default">
         <th scope="row">${book.title}</th>
@@ -81,6 +83,8 @@ addBookToLibrary.onclick = function() {
     let readStatus ="Unread";
     let book = new Book(title, author, readStatus);
     myLibrary.push(book);
+    //Update Local Storage
+    updateLocalStorage(myLibrary);
     //Update the Display
     modal.style.display = "none";
     document.getElementById("new-title").value = "";
